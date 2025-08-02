@@ -1,41 +1,4 @@
-let tickets = [
-    {
-        id: 1,
-        subject: "Login Issues with New Account",
-        description: "Unable to login after creating a new account. Getting 'Invalid credentials' error.",
-        category: "technical",
-        status: "open",
-        author: "John Doe",
-        createdAt: "2024-01-15T10:30:00Z",
-        updatedAt: "2024-01-15T10:30:00Z",
-        votes: 3,
-        userVote: null
-    },
-    {
-        id: 2,
-        subject: "Billing Discrepancy in Monthly Invoice",
-        description: "My monthly invoice shows charges that don't match my subscription plan.",
-        category: "billing",
-        status: "in-progress",
-        author: "Jane Smith",
-        createdAt: "2024-01-14T15:45:00Z",
-        updatedAt: "2024-01-15T09:20:00Z",
-        votes: 1,
-        userVote: "up"
-    },
-    {
-        id: 3,
-        subject: "Feature Request: Dark Mode",
-        description: "It would be great to have a dark mode option for better user experience.",
-        category: "general",
-        status: "resolved",
-        author: "Mike Johnson",
-        createdAt: "2024-01-13T08:15:00Z",
-        updatedAt: "2024-01-14T16:30:00Z",
-        votes: 15,
-        userVote: null
-    }
-];
+let tickets = [];
 
 let currentUser = "John Doe";
 let filteredTickets = [...tickets];
@@ -51,12 +14,37 @@ const categoryFilter = document.getElementById('categoryFilter');
 const searchInput = document.getElementById('searchInput');
 const sortBy = document.getElementById('sortBy');
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuth();
-    renderTickets();
-    setupEventListeners();
+// 👇 Place this anywhere before fetchTickets() is called
+async function fetchTickets() {
+    try {
+        const session = JSON.parse(localStorage.getItem('quickdesk_session'));
+        const res = await fetch('http://localhost:5000/api/tickets/user', {
+            headers: {
+                Authorization: session.token
+            }
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            tickets = data.tickets;
+            filteredTickets = [...tickets];
+        } else {
+            alert(data.msg || 'Failed to load tickets.');
+        }
+    } catch (err) {
+        console.error('Error fetching tickets:', err);
+        alert('Could not fetch tickets.');
+    }
+}
+
+// 👇 DOM loaded
+document.addEventListener('DOMContentLoaded', async function() {
+    checkAuth();                // your existing function
+    await fetchTickets();       // fetch real data
+    renderTickets();            // render to UI
+    setupEventListeners();      // filters, buttons etc.
 });
+
 
 // Check authentication
 function checkAuth() {
@@ -119,33 +107,40 @@ function closeModals() {
 }
 
 // Create Ticket
-function handleCreateTicket(event) {
+async function handleCreateTicket(event) {
     event.preventDefault();
-    
+
     const subject = document.getElementById('ticketSubject').value;
     const category = document.getElementById('ticketCategory').value;
     const description = document.getElementById('ticketDescription').value;
-    
-    const newTicket = {
-        id: tickets.length + 1,
-        subject: subject,
-        description: description,
-        category: category,
-        status: 'open',
-        author: currentUser,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        votes: 0,
-        userVote: null
-    };
-    
-    tickets.unshift(newTicket);
-    applyFilters();
-    closeModals();
-    
-    // Show success message
-    alert('Ticket created successfully!');
+
+    const session = JSON.parse(localStorage.getItem('quickdesk_session'));
+
+    try {
+        const res = await fetch('http://localhost:5000/api/tickets', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: session.token
+            },
+            body: JSON.stringify({ subject, description, category })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            alert(data.msg || 'Error creating ticket');
+            return;
+        }
+
+        await fetchTickets(); // Refresh tickets
+        closeModals();
+        alert('Ticket created successfully!');
+    } catch (err) {
+        console.error(err);
+        alert('Server error');
+    }
 }
+
 
 // Render Tickets
 function renderTickets() {
