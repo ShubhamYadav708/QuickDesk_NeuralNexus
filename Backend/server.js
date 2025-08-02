@@ -1,12 +1,30 @@
-console.log("server reached sucess");
+console.log("server reached success");
 const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const app = express();
-const authRoutes = require('./routes/auth');
 require('dotenv').config();
 
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use('/api/auth', authRoutes);
 
+// Routes
+const authRoutes = require('./routes/auth');
+const ticketRoutes = require('./routes/ticket');
+app.use('/api/auth', authRoutes);
+app.use('/api/tickets', ticketRoutes);
+
+// Protected route test
+const verifyToken = require('./middleware/verifyToken');
+app.get('/api/protected', verifyToken, (req, res) => {
+  res.json({ msg: `Hello ${req.user.role}, your ID is ${req.user.id}` });
+});
+
+// Serve frontend (optional)
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
