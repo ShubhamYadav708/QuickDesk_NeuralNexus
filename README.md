@@ -18,6 +18,6 @@ QuickDesk is a simple helpdesk ticketing system where users can raise support ti
 7.Built with Node.js, Express, MySQL, and vanilla JS/CSS  
 
 # Author
-Shubham Yadav
-Amit Verma
+Shubham Yadav.
+Amit Verma,
 Aryan Sharma
