@@ -1,4 +1,4 @@
-# QuickDesk_NeuralNexus
+# QuickDesk
 This is a project we are building for odoo hackathon in round-1.
 
 Our Frontend is added inside backend folder's public directory.
