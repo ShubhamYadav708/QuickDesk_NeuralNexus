@@ -9,33 +9,15 @@ QuickDesk is a simple helpdesk ticketing system where users can raise support ti
 
 ## Features
 
-✅ User registration and login  
-✅ JWT-based authentication  
-✅ Role-based authorization (user/admin)  
-✅ Create, view, update, delete tickets  
-✅ Vote on tickets  
-✅ Responsive and clean user interface  
-✅ Built with Node.js, Express, MySQL, and vanilla JS/CSS  
+1.User registration and login  
+2.JWT-based authentication  
+3.Role-based authorization (user/admin)  
+4.Create, view, update, delete tickets  
+5.Vote on tickets  
+6.Responsive and clean user interface  
+7.Built with Node.js, Express, MySQL, and vanilla JS/CSS  
 
-## Project Structure
-
-QuickDesk/
-├── public/
-│ ├── index.html
-│ ├── signin.html
-│ ├── signup.html
-│ ├── dashboard.html
-│ ├── style.css
-│ └── script.js
-├── routes/
-│ ├── auth.js
-│ └── ticket.js
-├── models/
-│ ├── UserModel.js
-│ └── TicketModel.js
-├── middleware/
-│ └── verifyToken.js
-├── db.js
-├── server.js
-├── .env
-└── package.json
+# Author
+Shubham Yadav
+Amit Verma
+Aryan Sharma
