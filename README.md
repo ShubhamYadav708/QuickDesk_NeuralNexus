@@ -1,8 +1,3 @@
-# QuickDesk
-This is a project we are building for odoo hackathon in round-1.
-
-Our Frontend is added inside backend folder's public directory.
-
 # QuickDesk - Helpdesk Ticketing System
 
 QuickDesk is a simple helpdesk ticketing system where users can raise support tickets, and admins can manage them. It includes features like user registration, login, ticket creation, and admin ticket controls.
